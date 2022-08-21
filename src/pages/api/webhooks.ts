@@ -41,7 +41,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const type = event.type
 
     if (relevantEvents.has(type)) {
-        console.log(`Evento recebido: ${event}`)
+        console.log('Evento recebido: ',event)
     }
 
     res.status(200).json({ ok: true})
