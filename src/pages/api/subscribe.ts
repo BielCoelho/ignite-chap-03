@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { query as q } from "faunadb";
-import { getSession } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { fauna } from "../../services/fauna";
 import { stripe } from "../../services/stripe";
 
@@ -16,6 +16,10 @@ type User = {
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "POST") {
         const session = await getSession({req});
+        if (!session) {
+            signIn('github')
+            return
+        }
 
         const user = await fauna.query<User>(
             q.Get(
@@ -54,7 +58,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             payment_method_types: ['card'],
             billing_address_collection: 'required',
             line_items: [
-                {price: 'price_1LXXfMDybH1AVoGNy6VmO1LM', quantity: 1}
+                {price: 'price_1LZOnkECrEmBoyb4ik5jA2cJ', quantity: 1}
             ],
             mode: 'subscription',
             allow_promotion_codes: true,

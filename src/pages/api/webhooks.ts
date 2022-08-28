@@ -31,6 +31,7 @@ const relevantEvents = new Set([
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === 'POST') {
     const buf = await buffer(req)
+
     const secret = req.headers['stripe-signature']
 
     let event: Stripe.Event;
@@ -41,9 +42,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(400).send(`Webhook Error: ${err.message}`)
     }
 
-    const type = event.type
+    const {type} = event
 
     if (relevantEvents.has(type)) {
+        console.log(`Event ${type}`)
+
         try {
             switch (type) {
                 case 'customer.subscription.updated':
@@ -55,7 +58,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                         subscription.customer.toString(),
                         false
                         );
-                    
                         break;
 
                 case 'checkout.session.completed': 
